@@ -163,7 +163,6 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
           <TabsList>
             <TabsTrigger value="activities">My Activities</TabsTrigger>
             <TabsTrigger value="submit">Submit New</TabsTrigger>
-            <TabsTrigger value="progress">Progress Report</TabsTrigger>
           </TabsList>
 
           <TabsContent value="activities">
@@ -287,84 +286,6 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="progress">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Points Breakdown</CardTitle>
-                  <CardDescription>Points by category</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {[
-                      { category: "Technical", points: 15, required: 30, color: "bg-primary" },
-                      { category: "Sports", points: 0, required: 20, color: "bg-warning" },
-                      { category: "Social Service", points: 0, required: 25, color: "bg-success" },
-                      { category: "Cultural", points: 0, required: 25, color: "bg-secondary-dark" }
-                    ].map((item) => (
-                      <div key={item.category} className="space-y-2">
-                        <div className="flex justify-between text-sm">
-                          <span className="font-medium">{item.category}</span>
-                          <span>{item.points}/{item.required} points</span>
-                        </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
-                          <div 
-                            className={`h-full ${item.color} transition-all duration-300`}
-                            style={{ width: `${(item.points / item.required) * 100}%` }}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card>
-                <CardHeader>
-                  <CardTitle>Graduation Status</CardTitle>
-                  <CardDescription>Your progress towards requirements</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-center space-y-4">
-                    <div className="relative w-32 h-32 mx-auto">
-                      <svg className="w-32 h-32 transform -rotate-90">
-                        <circle
-                          cx="64"
-                          cy="64"
-                          r="56"
-                          stroke="hsl(var(--muted))"
-                          strokeWidth="8"
-                          fill="none"
-                        />
-                        <circle
-                          cx="64"
-                          cy="64"
-                          r="56"
-                          stroke="hsl(var(--success))"
-                          strokeWidth="8"
-                          fill="none"
-                          strokeDasharray={`${2 * Math.PI * 56}`}
-                          strokeDashoffset={`${2 * Math.PI * 56 * (1 - totalPoints / 100)}`}
-                          className="transition-all duration-500"
-                        />
-                      </svg>
-                      <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-2xl font-bold text-foreground">{totalPoints}%</span>
-                      </div>
-                    </div>
-                    <div>
-                      <p className="text-lg font-semibold">
-                        {totalPoints >= 100 ? "Requirements Complete!" : `${100 - totalPoints} points remaining`}
-                      </p>
-                      <p className="text-sm text-muted-foreground">
-                        {totalPoints >= 100 ? "Ready for graduation" : "Keep up the great work!"}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
-          </TabsContent>
         </Tabs>
       </main>
     </div>
