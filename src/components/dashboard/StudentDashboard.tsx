@@ -160,18 +160,11 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
 
         {/* Main Content Tabs */}
         <Tabs defaultValue="activities" className="space-y-6">
-          <div className="flex justify-between items-center">
-            <TabsList>
-              <TabsTrigger value="activities">My Activities</TabsTrigger>
-              <TabsTrigger value="submit">Submit New</TabsTrigger>
-              <TabsTrigger value="progress">Progress Report</TabsTrigger>
-            </TabsList>
-            
-            <Button variant="academic">
-              <Plus className="h-4 w-4" />
-              Quick Submit
-            </Button>
-          </div>
+          <TabsList>
+            <TabsTrigger value="activities">My Activities</TabsTrigger>
+            <TabsTrigger value="submit">Submit New</TabsTrigger>
+            <TabsTrigger value="progress">Progress Report</TabsTrigger>
+          </TabsList>
 
           <TabsContent value="activities">
             <Card>
