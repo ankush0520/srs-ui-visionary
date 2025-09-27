@@ -3,6 +3,9 @@ import { Button } from "@/components/ui/enhanced-button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Input } from "@/components/ui/input";
 import { StatCard } from "./StatCard";
 import { Header } from "@/components/layout/Header";
 import { 
@@ -13,7 +16,8 @@ import {
   XCircle,
   FileText,
   Calendar,
-  Target
+  Target,
+  Upload
 } from "lucide-react";
 
 interface StudentDashboardProps {
@@ -57,12 +61,39 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
     }
   ]);
 
+  const [activityDetails, setActivityDetails] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const totalPoints = activities
     .filter(a => a.status === "approved")
     .reduce((sum, a) => sum + a.points, 0);
   
   const pendingActivities = activities.filter(a => a.status === "pending").length;
   const approvedActivities = activities.filter(a => a.status === "approved").length;
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setSelectedFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!activityDetails.trim()) {
+      alert("Please enter activity details");
+      return;
+    }
+    if (!selectedFile) {
+      alert("Please upload proof document");
+      return;
+    }
+    // TODO: Handle form submission
+    console.log("Activity Details:", activityDetails);
+    console.log("Proof File:", selectedFile);
+    alert("Activity submitted successfully!");
+    setActivityDetails("");
+    setSelectedFile(null);
+  };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
@@ -190,18 +221,75 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
                   Submit your activity for faculty review and point allocation
                 </CardDescription>
               </CardHeader>
-              <CardContent className="space-y-6">
-                <div className="text-center py-12 border-2 border-dashed border-border rounded-lg">
-                  <FileText className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Activity Submission Form</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Upload proof documents and fill activity details
-                  </p>
-                  <Button variant="academic">
-                    <Plus className="h-4 w-4" />
-                    Start Submission
+              <CardContent>
+                <form onSubmit={handleSubmit} className="space-y-6">
+                  <div className="space-y-2">
+                    <Label htmlFor="activity-details">Activity Details *</Label>
+                    <Textarea
+                      id="activity-details"
+                      placeholder="Please describe your activity in detail including what you did, when, where, and any achievements or learnings..."
+                      value={activityDetails}
+                      onChange={(e) => setActivityDetails(e.target.value)}
+                      className="min-h-[120px] resize-none"
+                      required
+                    />
+                    <p className="text-sm text-muted-foreground">
+                      Provide comprehensive details about your activity participation
+                    </p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="proof-upload">Upload Proof Documents *</Label>
+                    <div className="border-2 border-dashed border-border rounded-lg p-6 hover:border-primary transition-colors">
+                      <div className="text-center space-y-4">
+                        <Upload className="mx-auto h-8 w-8 text-muted-foreground" />
+                        <div>
+                          <p className="text-sm font-medium">Click to upload or drag and drop</p>
+                          <p className="text-xs text-muted-foreground">
+                            PDF, JPG, PNG files up to 10MB
+                          </p>
+                        </div>
+                        <Input
+                          id="proof-upload"
+                          type="file"
+                          onChange={handleFileChange}
+                          accept=".pdf,.jpg,.jpeg,.png"
+                          className="hidden"
+                          required
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => document.getElementById('proof-upload')?.click()}
+                        >
+                          Choose File
+                        </Button>
+                      </div>
+                    </div>
+                    {selectedFile && (
+                      <div className="flex items-center space-x-2 p-2 bg-muted rounded-md">
+                        <FileText className="h-4 w-4 text-success" />
+                        <span className="text-sm font-medium">{selectedFile.name}</span>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => setSelectedFile(null)}
+                        >
+                          Remove
+                        </Button>
+                      </div>
+                    )}
+                    <p className="text-sm text-muted-foreground">
+                      Upload certificates, photos, or any documents that prove your participation
+                    </p>
+                  </div>
+
+                  <Button type="submit" className="w-full" size="lg">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Submit Activity
                   </Button>
-                </div>
+                </form>
               </CardContent>
             </Card>
           </TabsContent>
