@@ -18,7 +18,14 @@ import {
   Globe,
   Download,
   Upload,
-  Search
+  Search,
+  TrendingUp,
+  Calendar,
+  Trophy,
+  Heart,
+  Briefcase,
+  Music,
+  Check
 } from "lucide-react";
 
 interface AdminDashboardProps {
@@ -66,6 +73,54 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
       points: 30,
       status: "faculty_approved",
       submittedDate: "2024-01-20"
+    }
+  ]);
+
+  // Activity categories data
+  const [activityCategories] = useState([
+    {
+      id: 1,
+      name: "Sports & Athletics",
+      icon: <Trophy className="h-6 w-6" />,
+      color: "text-blue-600 border-blue-200",
+      activities: [
+        { name: "Basketball Tournament", students: 25, points: 20, status: "pending" },
+        { name: "Marathon Participation", students: 12, points: 15, status: "pending" },
+        { name: "Cricket Championship", students: 30, points: 25, status: "approved" }
+      ]
+    },
+    {
+      id: 2,
+      name: "Social Service",
+      icon: <Heart className="h-6 w-6" />,
+      color: "text-green-600 border-green-200",
+      activities: [
+        { name: "Blood Donation Camp", students: 45, points: 30, status: "pending" },
+        { name: "Village Cleanup Drive", students: 20, points: 25, status: "approved" },
+        { name: "Teaching Underprivileged", students: 15, points: 35, status: "pending" }
+      ]
+    },
+    {
+      id: 3,
+      name: "Technical & Academic",
+      icon: <Briefcase className="h-6 w-6" />,
+      color: "text-purple-600 border-purple-200", 
+      activities: [
+        { name: "Hackathon Competition", students: 18, points: 40, status: "pending" },
+        { name: "Research Publication", students: 8, points: 50, status: "approved" },
+        { name: "Technical Workshop", students: 35, points: 20, status: "pending" }
+      ]
+    },
+    {
+      id: 4,
+      name: "Cultural & Arts",
+      icon: <Music className="h-6 w-6" />,
+      color: "text-orange-600 border-orange-200",
+      activities: [
+        { name: "Annual Cultural Fest", students: 50, points: 25, status: "pending" },
+        { name: "Art Exhibition", students: 12, points: 15, status: "approved" },
+        { name: "Drama Performance", students: 22, points: 20, status: "pending" }
+      ]
     }
   ]);
 
@@ -138,7 +193,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
           <TabsList>
             <TabsTrigger value="overview">System Overview</TabsTrigger>
             <TabsTrigger value="approvals">Final Approvals</TabsTrigger>
-            <TabsTrigger value="users">User Management</TabsTrigger>
+            <TabsTrigger value="activities">Activity Categories</TabsTrigger>
             <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
             <TabsTrigger value="settings">System Settings</TabsTrigger>
           </TabsList>
@@ -251,37 +306,59 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="users">
+          <TabsContent value="activities">
             <Card>
               <CardHeader>
-                <div className="flex justify-between items-center">
-                  <div>
-                    <CardTitle>User Management</CardTitle>
-                    <CardDescription>Manage students, faculty, and administrative users</CardDescription>
-                  </div>
-                  <Button variant="academic">
-                    <UserPlus className="h-4 w-4" />
-                    Add New User
-                  </Button>
-                </div>
+                <CardTitle>Activity Categories</CardTitle>
+                <CardDescription>Manage activities by categories and approve submissions</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">User Management System</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Add, edit, and manage user accounts and permissions
-                  </p>
-                  <div className="flex gap-3 justify-center">
-                    <Button variant="outline">
-                      <Upload className="h-4 w-4" />
-                      Import Users
-                    </Button>
-                    <Button variant="outline">
-                      <Download className="h-4 w-4" />
-                      Export Users
-                    </Button>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {activityCategories.map((category) => (
+                    <Card key={category.id} className={`border-2 ${category.color}`}>
+                      <CardHeader>
+                        <div className="flex items-center gap-3">
+                          <div className={category.color}>
+                            {category.icon}
+                          </div>
+                          <CardTitle className="text-lg">{category.name}</CardTitle>
+                        </div>
+                      </CardHeader>
+                      <CardContent>
+                        <div className="space-y-3">
+                          {category.activities.map((activity, index) => (
+                            <div key={index} className="border rounded-lg p-3">
+                              <div className="flex justify-between items-start mb-2">
+                                <div className="flex-1">
+                                  <h4 className="font-medium text-foreground">{activity.name}</h4>
+                                  <p className="text-sm text-muted-foreground">
+                                    {activity.students} students • {activity.points} points
+                                  </p>
+                                </div>
+                                <Badge 
+                                  variant={activity.status === "approved" ? "default" : "outline"}
+                                  className={activity.status === "approved" ? "bg-success text-success-foreground" : "border-warning text-warning"}
+                                >
+                                  {activity.status}
+                                </Badge>
+                              </div>
+                              {activity.status === "pending" && (
+                                <Button 
+                                  variant="success" 
+                                  size="sm" 
+                                  className="w-full mt-2"
+                                  onClick={() => console.log("Approved activity:", activity.name)}
+                                >
+                                  <Check className="h-4 w-4" />
+                                  Approve Activity
+                                </Button>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
                 </div>
               </CardContent>
             </Card>
@@ -292,16 +369,38 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
               <Card>
                 <CardHeader>
                   <CardTitle>System Analytics</CardTitle>
-                  <CardDescription>Usage statistics and trends</CardDescription>
+                  <CardDescription>Real-time platform usage statistics</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-center py-8">
-                    <BarChart3 className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                    <h3 className="text-lg font-semibold text-foreground mb-2">Analytics Dashboard</h3>
-                    <p className="text-muted-foreground mb-4">
-                      Detailed charts and reports coming soon
-                    </p>
-                    <Button variant="academic">View Analytics</Button>
+                  <div className="space-y-6">
+                    <div className="grid grid-cols-2 gap-4">
+                      <div className="text-center p-4 border rounded-lg">
+                        <TrendingUp className="h-8 w-8 mx-auto text-success mb-2" />
+                        <p className="text-2xl font-bold text-foreground">89%</p>
+                        <p className="text-sm text-muted-foreground">Activity Approval Rate</p>
+                      </div>
+                      <div className="text-center p-4 border rounded-lg">
+                        <Calendar className="h-8 w-8 mx-auto text-primary mb-2" />
+                        <p className="text-2xl font-bold text-foreground">2.3</p>
+                        <p className="text-sm text-muted-foreground">Avg Review Days</p>
+                      </div>
+                    </div>
+                    <div className="space-y-3">
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">Monthly Activity Growth</span>
+                        <span className="text-sm text-success">+23%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div className="bg-success h-2 rounded-full" style={{ width: '78%' }}></div>
+                      </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm font-medium">Faculty Engagement</span>
+                        <span className="text-sm text-success">+15%</span>
+                      </div>
+                      <div className="w-full bg-muted rounded-full h-2">
+                        <div className="bg-primary h-2 rounded-full" style={{ width: '92%' }}></div>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

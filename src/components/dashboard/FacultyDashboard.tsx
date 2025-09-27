@@ -15,11 +15,11 @@ import {
   Search,
   FileText,
   MessageSquare,
-  Calendar,
   Eye,
   Check,
   X
 } from "lucide-react";
+import { Checkbox } from "@/components/ui/checkbox";
 
 interface FacultyDashboardProps {
   user: {
@@ -97,6 +97,57 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
 
   const [selectedRequest, setSelectedRequest] = useState(pendingRequests[0]);
   const [reviewComment, setReviewComment] = useState("");
+  const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
+  const [selectAll, setSelectAll] = useState(false);
+
+  // Sample student data for bulk actions
+  const [allStudents] = useState([
+    {
+      id: 1,
+      name: "John Doe",
+      studentId: "M251001CS",
+      email: "john.doe@email.com",
+      activities: 5,
+      totalPoints: 125,
+      pendingActivities: 2
+    },
+    {
+      id: 2,
+      name: "Jane Smith", 
+      studentId: "M251002CS",
+      email: "jane.smith@email.com",
+      activities: 3,
+      totalPoints: 80,
+      pendingActivities: 1
+    },
+    {
+      id: 3,
+      name: "Mike Johnson",
+      studentId: "M251003CS", 
+      email: "mike.johnson@email.com",
+      activities: 7,
+      totalPoints: 190,
+      pendingActivities: 1
+    },
+    {
+      id: 4,
+      name: "Sarah Wilson",
+      studentId: "M251004CS",
+      email: "sarah.wilson@email.com", 
+      activities: 4,
+      totalPoints: 95,
+      pendingActivities: 0
+    },
+    {
+      id: 5,
+      name: "Tom Brown",
+      studentId: "M251005CS",
+      email: "tom.brown@email.com",
+      activities: 6,
+      totalPoints: 155,
+      pendingActivities: 3
+    }
+  ]);
 
   const totalStudents = 45;
   const pendingCount = pendingRequests.length;
@@ -110,6 +161,29 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
   const handleReject = (requestId: number) => {
     console.log("Rejected request:", requestId, "Comment:", reviewComment);
     setReviewComment("");
+  };
+
+  const handleSelectAll = () => {
+    if (selectAll) {
+      setSelectedStudents([]);
+    } else {
+      setSelectedStudents(allStudents.map(s => s.id));
+    }
+    setSelectAll(!selectAll);
+  };
+
+  const handleStudentSelect = (studentId: number) => {
+    if (selectedStudents.includes(studentId)) {
+      setSelectedStudents(selectedStudents.filter(id => id !== studentId));
+    } else {
+      setSelectedStudents([...selectedStudents, studentId]);
+    }
+  };
+
+  const handleBulkApprove = () => {
+    console.log("Bulk approving students:", selectedStudents);
+    setSelectedStudents([]);
+    setSelectAll(false);
   };
 
   return (
@@ -131,7 +205,7 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
         </div>
 
         {/* Stats Overview */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
           <StatCard
             title="Assigned Students"
             value={totalStudents}
@@ -153,13 +227,6 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
             icon={<CheckCircle className="h-5 w-5" />}
             variant="success"
           />
-          <StatCard
-            title="Average Response Time"
-            value="1.5 days"
-            subtitle="Target: < 2 days"
-            icon={<Calendar className="h-5 w-5" />}
-            variant="success"
-          />
         </div>
 
         {/* Main Content Tabs */}
@@ -167,7 +234,6 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
           <TabsList>
             <TabsTrigger value="pending">Pending Reviews ({pendingCount})</TabsTrigger>
             <TabsTrigger value="history">Review History</TabsTrigger>
-            <TabsTrigger value="students">My Students</TabsTrigger>
             <TabsTrigger value="bulk">Bulk Actions</TabsTrigger>
           </TabsList>
 
@@ -325,39 +391,64 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
             </Card>
           </TabsContent>
 
-          <TabsContent value="students">
-            <Card>
-              <CardHeader>
-                <CardTitle>My Students</CardTitle>
-                <CardDescription>Students under your faculty guidance</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="text-center py-12">
-                  <Users className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Student Management</h3>
-                  <p className="text-muted-foreground mb-4">
-                    View detailed student profiles and activity progress
-                  </p>
-                  <Button variant="academic">View All Students</Button>
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
           <TabsContent value="bulk">
             <Card>
               <CardHeader>
-                <CardTitle>Bulk Actions</CardTitle>
-                <CardDescription>Manage multiple requests efficiently</CardDescription>
+                <div className="flex justify-between items-center">
+                  <div>
+                    <CardTitle>Bulk Actions</CardTitle>
+                    <CardDescription>Select and approve multiple students</CardDescription>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button 
+                      variant="outline" 
+                      onClick={handleSelectAll}
+                      disabled={allStudents.length === 0}
+                    >
+                      {selectAll ? "Deselect All" : "Select All"}
+                    </Button>
+                    <Button 
+                      variant="success" 
+                      onClick={handleBulkApprove}
+                      disabled={selectedStudents.length === 0}
+                    >
+                      <Check className="h-4 w-4" />
+                      Approve Selected ({selectedStudents.length})
+                    </Button>
+                  </div>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="text-center py-12">
-                  <CheckCircle className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-                  <h3 className="text-lg font-semibold text-foreground mb-2">Bulk Review Tools</h3>
-                  <p className="text-muted-foreground mb-4">
-                    Approve or review multiple activities at once
-                  </p>
-                  <Button variant="academic">Open Bulk Tools</Button>
+                <div className="space-y-4">
+                  {allStudents.map((student) => (
+                    <div key={student.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                      <div className="flex items-center gap-4">
+                        <Checkbox
+                          checked={selectedStudents.includes(student.id)}
+                          onCheckedChange={() => handleStudentSelect(student.id)}
+                        />
+                        <div className="flex-1 grid grid-cols-1 md:grid-cols-4 gap-4">
+                          <div>
+                            <h4 className="font-semibold text-foreground">{student.name}</h4>
+                            <p className="text-sm text-muted-foreground">{student.studentId}</p>
+                            <p className="text-xs text-muted-foreground">{student.email}</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-lg font-semibold text-foreground">{student.activities}</p>
+                            <p className="text-xs text-muted-foreground">Total Activities</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-lg font-semibold text-success">{student.totalPoints}</p>
+                            <p className="text-xs text-muted-foreground">Total Points</p>
+                          </div>
+                          <div className="text-center">
+                            <p className="text-lg font-semibold text-warning">{student.pendingActivities}</p>
+                            <p className="text-xs text-muted-foreground">Pending Activities</p>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </CardContent>
             </Card>
