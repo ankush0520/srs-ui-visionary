@@ -216,44 +216,12 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
         </div>
 
         {/* Main Content Tabs */}
-        <Tabs defaultValue="overview" className="space-y-6">
+        <Tabs defaultValue="approvals" className="space-y-6">
           <TabsList>
-            <TabsTrigger value="overview">System Overview</TabsTrigger>
             <TabsTrigger value="approvals">Final Approvals</TabsTrigger>
             <TabsTrigger value="manageUsers">Manage Users</TabsTrigger>
             <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
           </TabsList>
-
-          <TabsContent value="overview">
-            {/* Recent Activity Feed */}
-            <Card>
-              <CardHeader>
-                <CardTitle>Recent Activity Feed</CardTitle>
-                <CardDescription>Latest system activities requiring attention</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {recentActivities.map((activity) => (
-                    <div key={activity.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
-                      <div className="flex justify-between items-start mb-2">
-                        <div className="flex-1">
-                          <h4 className="font-medium text-foreground">{activity.activity}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {activity.studentName} • Reviewed by {activity.facultyName}
-                          </p>
-                        </div>
-                        {getStatusBadge(activity.status)}
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm text-muted-foreground">{activity.points} points</span>
-                        <span className="text-xs text-muted-foreground">{activity.submittedDate}</span>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
 
           <TabsContent value="approvals">
             <Card>
