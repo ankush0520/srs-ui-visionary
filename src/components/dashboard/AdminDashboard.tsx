@@ -8,6 +8,23 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { StatCard } from "./StatCard";
 import { Header } from "@/components/layout/Header";
 import { 
+  LineChart, 
+  Line, 
+  AreaChart, 
+  Area, 
+  BarChart, 
+  Bar, 
+  PieChart, 
+  Pie, 
+  Cell, 
+  XAxis, 
+  YAxis, 
+  CartesianGrid, 
+  Tooltip, 
+  Legend, 
+  ResponsiveContainer 
+} from 'recharts';
+import { 
   Users, 
   Activity,
   Settings,
@@ -72,6 +89,31 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     { id: 7, name: "Dr. Taylor", department: "Mathematics", email: "taylor@college.edu", experience: "7 years" },
     { id: 8, name: "Dr. Anderson", department: "Chemistry", email: "anderson@college.edu", experience: "11 years" }
   ]);
+
+  // Chart data
+  const monthlyActivityData = [
+    { month: 'Jan', activities: 45, approvals: 42 },
+    { month: 'Feb', activities: 52, approvals: 48 },
+    { month: 'Mar', activities: 48, approvals: 46 },
+    { month: 'Apr', activities: 61, approvals: 58 },
+    { month: 'May', activities: 55, approvals: 52 },
+    { month: 'Jun', activities: 67, approvals: 63 }
+  ];
+
+  const categoryDistribution = [
+    { name: 'Technical & Academic', value: 35, color: '#8B5CF6' },
+    { name: 'Sports & Athletics', value: 28, color: '#3B82F6' },
+    { name: 'Social Service', value: 22, color: '#10B981' },
+    { name: 'Cultural & Arts', value: 15, color: '#F59E0B' }
+  ];
+
+  const facultyEngagementData = [
+    { department: 'Computer Science', reviews: 45, avgTime: 2.1 },
+    { department: 'Electronics', reviews: 38, avgTime: 1.8 },
+    { department: 'Mechanical', reviews: 42, avgTime: 2.5 },
+    { department: 'Civil', reviews: 35, avgTime: 2.3 },
+    { department: 'Chemical', reviews: 28, avgTime: 1.9 }
+  ];
 
   const [recentActivities] = useState([
     {
@@ -271,86 +313,166 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
           </TabsContent>
 
           <TabsContent value="reports">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-6">
+              {/* Monthly Activity Trends */}
               <Card>
                 <CardHeader>
-                  <CardTitle>System Analytics</CardTitle>
-                  <CardDescription>Real-time platform usage statistics</CardDescription>
+                  <CardTitle>Monthly Activity Trends</CardTitle>
+                  <CardDescription>Activities submitted vs approved over time</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="space-y-6">
-                    <div className="grid grid-cols-2 gap-4">
-                      <div className="text-center p-4 border rounded-lg">
-                        <TrendingUp className="h-8 w-8 mx-auto text-success mb-2" />
-                        <p className="text-2xl font-bold text-foreground">89%</p>
-                        <p className="text-sm text-muted-foreground">Activity Approval Rate</p>
-                      </div>
-                      <div className="text-center p-4 border rounded-lg">
-                        <Calendar className="h-8 w-8 mx-auto text-primary mb-2" />
-                        <p className="text-2xl font-bold text-foreground">2.3</p>
-                        <p className="text-sm text-muted-foreground">Avg Review Days</p>
-                      </div>
-                    </div>
-                    <div className="space-y-3">
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Monthly Activity Growth</span>
-                        <span className="text-sm text-success">+23%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-success h-2 rounded-full" style={{ width: '78%' }}></div>
-                      </div>
-                      <div className="flex justify-between items-center">
-                        <span className="text-sm font-medium">Faculty Engagement</span>
-                        <span className="text-sm text-success">+15%</span>
-                      </div>
-                      <div className="w-full bg-muted rounded-full h-2">
-                        <div className="bg-primary h-2 rounded-full" style={{ width: '92%' }}></div>
-                      </div>
-                    </div>
-                  </div>
+                  <ResponsiveContainer width="100%" height={300}>
+                    <LineChart data={monthlyActivityData}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="month" />
+                      <YAxis />
+                      <Tooltip />
+                      <Legend />
+                      <Line type="monotone" dataKey="activities" stroke="#3B82F6" strokeWidth={2} name="Submitted" />
+                      <Line type="monotone" dataKey="approvals" stroke="#10B981" strokeWidth={2} name="Approved" />
+                    </LineChart>
+                  </ResponsiveContainer>
                 </CardContent>
               </Card>
 
-              <Card>
-                <CardHeader>
-                  <CardTitle>Export Reports</CardTitle>
-                  <CardDescription>Generate and download system reports</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center p-3 border rounded">
-                      <div>
-                        <h4 className="font-medium">Student Activity Report</h4>
-                        <p className="text-sm text-muted-foreground">All student activities and points</p>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {/* Activity Distribution */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Activity Distribution by Category</CardTitle>
+                    <CardDescription>Breakdown of activities by type</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <PieChart>
+                        <Pie
+                          data={categoryDistribution}
+                          cx="50%"
+                          cy="50%"
+                          labelLine={false}
+                          label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          outerRadius={80}
+                          fill="#8884d8"
+                          dataKey="value"
+                        >
+                          {categoryDistribution.map((entry, index) => (
+                            <Cell key={`cell-${index}`} fill={entry.color} />
+                          ))}
+                        </Pie>
+                        <Tooltip />
+                      </PieChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+
+                {/* Faculty Engagement */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Faculty Engagement by Department</CardTitle>
+                    <CardDescription>Reviews completed by department</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <ResponsiveContainer width="100%" height={300}>
+                      <BarChart data={facultyEngagementData}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis 
+                          dataKey="department" 
+                          angle={-45}
+                          textAnchor="end"
+                          height={80}
+                          fontSize={12}
+                        />
+                        <YAxis />
+                        <Tooltip />
+                        <Bar dataKey="reviews" fill="#8B5CF6" name="Reviews Completed" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* System Analytics Summary */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>System Analytics</CardTitle>
+                    <CardDescription>Real-time platform usage statistics</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="text-center p-4 border rounded-lg">
+                          <TrendingUp className="h-8 w-8 mx-auto text-success mb-2" />
+                          <p className="text-2xl font-bold text-foreground">89%</p>
+                          <p className="text-sm text-muted-foreground">Activity Approval Rate</p>
+                        </div>
+                        <div className="text-center p-4 border rounded-lg">
+                          <Calendar className="h-8 w-8 mx-auto text-primary mb-2" />
+                          <p className="text-2xl font-bold text-foreground">2.3</p>
+                          <p className="text-sm text-muted-foreground">Avg Review Days</p>
+                        </div>
                       </div>
-                      <Button variant="outline" size="sm">
-                        <Download className="h-4 w-4" />
-                        Export
-                      </Button>
-                    </div>
-                    <div className="flex justify-between items-center p-3 border rounded">
-                      <div>
-                        <h4 className="font-medium">Faculty Performance</h4>
-                        <p className="text-sm text-muted-foreground">Review times and statistics</p>
+                      <div className="space-y-3">
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">Monthly Activity Growth</span>
+                          <span className="text-sm text-success">+23%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div className="bg-success h-2 rounded-full" style={{ width: '78%' }}></div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                          <span className="text-sm font-medium">Faculty Engagement</span>
+                          <span className="text-sm text-success">+15%</span>
+                        </div>
+                        <div className="w-full bg-muted rounded-full h-2">
+                          <div className="bg-primary h-2 rounded-full" style={{ width: '92%' }}></div>
+                        </div>
                       </div>
-                      <Button variant="outline" size="sm">
-                        <Download className="h-4 w-4" />
-                        Export
-                      </Button>
                     </div>
-                    <div className="flex justify-between items-center p-3 border rounded">
-                      <div>
-                        <h4 className="font-medium">System Usage</h4>
-                        <p className="text-sm text-muted-foreground">Platform usage analytics</p>
+                  </CardContent>
+                </Card>
+
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Export Reports</CardTitle>
+                    <CardDescription>Generate and download system reports</CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="space-y-4">
+                      <div className="flex justify-between items-center p-3 border rounded">
+                        <div>
+                          <h4 className="font-medium">Student Activity Report</h4>
+                          <p className="text-sm text-muted-foreground">All student activities and points</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4" />
+                          Export
+                        </Button>
                       </div>
-                      <Button variant="outline" size="sm">
-                        <Download className="h-4 w-4" />
-                        Export
-                      </Button>
+                      <div className="flex justify-between items-center p-3 border rounded">
+                        <div>
+                          <h4 className="font-medium">Faculty Performance</h4>
+                          <p className="text-sm text-muted-foreground">Review times and statistics</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4" />
+                          Export
+                        </Button>
+                      </div>
+                      <div className="flex justify-between items-center p-3 border rounded">
+                        <div>
+                          <h4 className="font-medium">System Usage</h4>
+                          <p className="text-sm text-muted-foreground">Platform usage analytics</p>
+                        </div>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-4 w-4" />
+                          Export
+                        </Button>
+                      </div>
                     </div>
-                  </div>
-                </CardContent>
-              </Card>
+                  </CardContent>
+                </Card>
+              </div>
             </div>
           </TabsContent>
 
