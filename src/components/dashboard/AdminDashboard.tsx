@@ -4,6 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 import { StatCard } from "./StatCard";
 import { Header } from "@/components/layout/Header";
 import { 
@@ -25,7 +26,8 @@ import {
   Heart,
   Briefcase,
   Music,
-  Check
+  Check,
+  ArrowLeft
 } from "lucide-react";
 
 interface AdminDashboardProps {
@@ -45,6 +47,31 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     pendingApprovals: 18,
     thisMonthActivities: 45
   });
+
+  const [selectedActivity, setSelectedActivity] = useState<any>(null);
+  const [selectedFaculty, setSelectedFaculty] = useState<number[]>([]);
+
+  const [allActivities] = useState([
+    { id: 1, name: "Basketball Tournament", category: "Sports & Athletics", points: 20, description: "Inter-college basketball competition" },
+    { id: 2, name: "Blood Donation Camp", category: "Social Service", points: 30, description: "Community blood donation drive" },
+    { id: 3, name: "Hackathon Competition", category: "Technical & Academic", points: 40, description: "24-hour coding competition" },
+    { id: 4, name: "Annual Cultural Fest", category: "Cultural & Arts", points: 25, description: "College cultural festival" },
+    { id: 5, name: "Marathon Participation", category: "Sports & Athletics", points: 15, description: "City marathon event" },
+    { id: 6, name: "Research Publication", category: "Technical & Academic", points: 50, description: "Academic research paper publication" },
+    { id: 7, name: "Village Cleanup Drive", category: "Social Service", points: 25, description: "Environmental cleanup initiative" },
+    { id: 8, name: "Art Exhibition", category: "Cultural & Arts", points: 15, description: "Student art showcase" }
+  ]);
+
+  const [facultyList] = useState([
+    { id: 1, name: "Dr. Smith", department: "Computer Science", email: "smith@college.edu", experience: "10 years" },
+    { id: 2, name: "Dr. Johnson", department: "Electronics", email: "johnson@college.edu", experience: "8 years" },
+    { id: 3, name: "Dr. Davis", department: "Mechanical", email: "davis@college.edu", experience: "12 years" },
+    { id: 4, name: "Dr. Wilson", department: "Civil", email: "wilson@college.edu", experience: "6 years" },
+    { id: 5, name: "Dr. Brown", department: "Chemical", email: "brown@college.edu", experience: "15 years" },
+    { id: 6, name: "Dr. Miller", department: "Physics", email: "miller@college.edu", experience: "9 years" },
+    { id: 7, name: "Dr. Taylor", department: "Mathematics", email: "taylor@college.edu", experience: "7 years" },
+    { id: 8, name: "Dr. Anderson", department: "Chemistry", email: "anderson@college.edu", experience: "11 years" }
+  ]);
 
   const [recentActivities] = useState([
     {
@@ -194,6 +221,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
             <TabsTrigger value="overview">System Overview</TabsTrigger>
             <TabsTrigger value="approvals">Final Approvals</TabsTrigger>
             <TabsTrigger value="activities">Activity Categories</TabsTrigger>
+            <TabsTrigger value="manageUsers">Manage Users</TabsTrigger>
             <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
             <TabsTrigger value="settings">System Settings</TabsTrigger>
           </TabsList>
@@ -493,6 +521,125 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
                 </div>
               </CardContent>
             </Card>
+          </TabsContent>
+
+          <TabsContent value="manageUsers">
+            {!selectedActivity ? (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Manage Users - Activities</CardTitle>
+                  <CardDescription>Select an activity to assign faculty members</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {allActivities.map((activity) => (
+                      <Card 
+                        key={activity.id} 
+                        className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-primary"
+                        onClick={() => setSelectedActivity(activity)}
+                      >
+                        <CardHeader>
+                          <CardTitle className="text-lg">{activity.name}</CardTitle>
+                          <CardDescription>{activity.category}</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="space-y-2">
+                            <p className="text-sm text-muted-foreground">{activity.description}</p>
+                            <div className="flex justify-between items-center">
+                              <Badge variant="outline">{activity.points} points</Badge>
+                              <Button variant="ghost" size="sm">
+                                Select →
+                              </Button>
+                            </div>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center gap-3">
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={() => {
+                        setSelectedActivity(null);
+                        setSelectedFaculty([]);
+                      }}
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                      Back
+                    </Button>
+                    <div>
+                      <CardTitle>Assign Faculty - {selectedActivity.name}</CardTitle>
+                      <CardDescription>Select faculty members to assign to this activity</CardDescription>
+                    </div>
+                  </div>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-2">
+                        <Checkbox
+                          id="selectAll"
+                          checked={selectedFaculty.length === facultyList.length}
+                          onCheckedChange={(checked) => {
+                            if (checked) {
+                              setSelectedFaculty(facultyList.map(f => f.id));
+                            } else {
+                              setSelectedFaculty([]);
+                            }
+                          }}
+                        />
+                        <label htmlFor="selectAll" className="font-medium">
+                          Select All Faculty ({selectedFaculty.length} selected)
+                        </label>
+                      </div>
+                      <Button 
+                        variant="default" 
+                        disabled={selectedFaculty.length === 0}
+                        onClick={() => {
+                          console.log("Assigning faculty:", selectedFaculty, "to activity:", selectedActivity.name);
+                          // Reset selection after assignment
+                          setSelectedFaculty([]);
+                        }}
+                      >
+                        Assign Selected Faculty
+                      </Button>
+                    </div>
+                    
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {facultyList.map((faculty) => (
+                        <div key={faculty.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                          <div className="flex items-start gap-3">
+                            <Checkbox
+                              id={`faculty-${faculty.id}`}
+                              checked={selectedFaculty.includes(faculty.id)}
+                              onCheckedChange={(checked) => {
+                                if (checked) {
+                                  setSelectedFaculty([...selectedFaculty, faculty.id]);
+                                } else {
+                                  setSelectedFaculty(selectedFaculty.filter(id => id !== faculty.id));
+                                }
+                              }}
+                            />
+                            <div className="flex-1">
+                              <h3 className="font-medium text-foreground">{faculty.name}</h3>
+                              <p className="text-sm text-muted-foreground">{faculty.department}</p>
+                              <p className="text-sm text-muted-foreground">{faculty.email}</p>
+                              <p className="text-xs text-muted-foreground mt-1">Experience: {faculty.experience}</p>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
           </TabsContent>
         </Tabs>
       </main>
