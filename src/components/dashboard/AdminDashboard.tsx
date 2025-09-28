@@ -220,71 +220,39 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
           <TabsList>
             <TabsTrigger value="overview">System Overview</TabsTrigger>
             <TabsTrigger value="approvals">Final Approvals</TabsTrigger>
-            <TabsTrigger value="activities">Activity Categories</TabsTrigger>
             <TabsTrigger value="manageUsers">Manage Users</TabsTrigger>
             <TabsTrigger value="reports">Reports & Analytics</TabsTrigger>
-            <TabsTrigger value="settings">System Settings</TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {/* Recent Activity Feed */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Activity Feed</CardTitle>
-                  <CardDescription>Latest system activities requiring attention</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    {recentActivities.map((activity) => (
-                      <div key={activity.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
-                        <div className="flex justify-between items-start mb-2">
-                          <div className="flex-1">
-                            <h4 className="font-medium text-foreground">{activity.activity}</h4>
-                            <p className="text-sm text-muted-foreground">
-                              {activity.studentName} • Reviewed by {activity.facultyName}
-                            </p>
-                          </div>
-                          {getStatusBadge(activity.status)}
+            {/* Recent Activity Feed */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Activity Feed</CardTitle>
+                <CardDescription>Latest system activities requiring attention</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {recentActivities.map((activity) => (
+                    <div key={activity.id} className="border rounded-lg p-4 hover:bg-muted/50 transition-colors">
+                      <div className="flex justify-between items-start mb-2">
+                        <div className="flex-1">
+                          <h4 className="font-medium text-foreground">{activity.activity}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {activity.studentName} • Reviewed by {activity.facultyName}
+                          </p>
                         </div>
-                        <div className="flex justify-between items-center">
-                          <span className="text-sm text-muted-foreground">{activity.points} points</span>
-                          <span className="text-xs text-muted-foreground">{activity.submittedDate}</span>
-                        </div>
+                        {getStatusBadge(activity.status)}
                       </div>
-                    ))}
-                  </div>
-                </CardContent>
-              </Card>
-
-              {/* Quick Actions */}
-              <Card>
-                <CardHeader>
-                  <CardTitle>Quick Actions</CardTitle>
-                  <CardDescription>Common administrative tasks</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid grid-cols-2 gap-4">
-                    <Button variant="outline" className="h-20 flex-col">
-                      <UserPlus className="h-6 w-6 mb-2" />
-                      Add User
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col">
-                      <FileSpreadsheet className="h-6 w-6 mb-2" />
-                      Export Data
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col">
-                      <Database className="h-6 w-6 mb-2" />
-                      Backup System
-                    </Button>
-                    <Button variant="outline" className="h-20 flex-col">
-                      <Settings className="h-6 w-6 mb-2" />
-                      System Config
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            </div>
+                      <div className="flex justify-between items-center">
+                        <span className="text-sm text-muted-foreground">{activity.points} points</span>
+                        <span className="text-xs text-muted-foreground">{activity.submittedDate}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
           </TabsContent>
 
           <TabsContent value="approvals">
@@ -328,64 +296,6 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
                         </Button>
                       </div>
                     </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="activities">
-            <Card>
-              <CardHeader>
-                <CardTitle>Activity Categories</CardTitle>
-                <CardDescription>Manage activities by categories and approve submissions</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {activityCategories.map((category) => (
-                    <Card key={category.id} className={`border-2 ${category.color}`}>
-                      <CardHeader>
-                        <div className="flex items-center gap-3">
-                          <div className={category.color}>
-                            {category.icon}
-                          </div>
-                          <CardTitle className="text-lg">{category.name}</CardTitle>
-                        </div>
-                      </CardHeader>
-                      <CardContent>
-                        <div className="space-y-3">
-                          {category.activities.map((activity, index) => (
-                            <div key={index} className="border rounded-lg p-3">
-                              <div className="flex justify-between items-start mb-2">
-                                <div className="flex-1">
-                                  <h4 className="font-medium text-foreground">{activity.name}</h4>
-                                  <p className="text-sm text-muted-foreground">
-                                    {activity.students} students • {activity.points} points
-                                  </p>
-                                </div>
-                                <Badge 
-                                  variant={activity.status === "approved" ? "default" : "outline"}
-                                  className={activity.status === "approved" ? "bg-success text-success-foreground" : "border-warning text-warning"}
-                                >
-                                  {activity.status}
-                                </Badge>
-                              </div>
-                              {activity.status === "pending" && (
-                                <Button 
-                                  variant="success" 
-                                  size="sm" 
-                                  className="w-full mt-2"
-                                  onClick={() => console.log("Approved activity:", activity.name)}
-                                >
-                                  <Check className="h-4 w-4" />
-                                  Approve Activity
-                                </Button>
-                              )}
-                            </div>
-                          ))}
-                        </div>
-                      </CardContent>
-                    </Card>
                   ))}
                 </div>
               </CardContent>
@@ -474,53 +384,6 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
                 </CardContent>
               </Card>
             </div>
-          </TabsContent>
-
-          <TabsContent value="settings">
-            <Card>
-              <CardHeader>
-                <CardTitle>System Configuration</CardTitle>
-                <CardDescription>Manage system settings and configurations</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 gap-6">
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">Point Categories</h3>
-                    <div className="space-y-2">
-                      {[
-                        { category: "Technical", points: "10-50" },
-                        { category: "Sports", points: "5-25" },
-                        { category: "Cultural", points: "5-30" },
-                        { category: "Social Service", points: "15-40" }
-                      ].map((item) => (
-                        <div key={item.category} className="flex justify-between items-center p-2 border rounded">
-                          <span>{item.category}</span>
-                          <span className="text-sm text-muted-foreground">{item.points} pts</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                  
-                  <div className="space-y-4">
-                    <h3 className="font-semibold">System Settings</h3>
-                    <div className="space-y-3">
-                      <Button variant="outline" className="w-full justify-start">
-                        <Globe className="h-4 w-4 mr-2" />
-                        General Settings
-                      </Button>
-                      <Button variant="outline" className="w-full justify-start">
-                        <ShieldCheck className="h-4 w-4 mr-2" />
-                        Security Settings
-                      </Button>
-                      <Button variant="outline" className="w-full justify-start">
-                        <Database className="h-4 w-4 mr-2" />
-                        Database Settings
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
           </TabsContent>
 
           <TabsContent value="manageUsers">
