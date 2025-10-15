@@ -2,7 +2,16 @@ import { Button } from "@/components/ui/enhanced-button";
 import { GraduationCap, User, LogOut } from "lucide-react";
 import { useLocation } from "react-router-dom";
 
-export function Header({ user, onLogout }) {
+interface HeaderProps {
+  user?: {
+    name: string;
+    role: 'student' | 'faculty' | 'admin';
+    email: string;
+  };
+  onLogout?: () => void;
+}
+
+export function Header({ user, onLogout }: HeaderProps) {
   const location = useLocation();
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
 

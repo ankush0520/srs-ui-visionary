@@ -7,7 +7,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { User, Mail, Lock, UserPlus, Building } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export function RegisterForm({ onRegister }) {
+interface RegisterFormProps {
+  onRegister: (userData: any) => void;
+}
+
+export function RegisterForm({ onRegister }: RegisterFormProps) {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -19,7 +23,7 @@ export function RegisterForm({ onRegister }) {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (formData.password !== formData.confirmPassword) {
@@ -36,7 +40,7 @@ export function RegisterForm({ onRegister }) {
     setIsLoading(false);
   };
 
-  const updateFormData = (field, value) => {
+  const updateFormData = (field: string, value: string) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 

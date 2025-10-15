@@ -1,6 +1,18 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 
+interface StatCardProps {
+  title: string;
+  value: string | number;
+  subtitle?: string;
+  icon: React.ReactNode;
+  variant?: "default" | "success" | "warning" | "destructive";
+  trend?: {
+    value: number;
+    isPositive: boolean;
+  };
+}
+
 export function StatCard({ 
   title, 
   value, 
@@ -8,7 +20,7 @@ export function StatCard({
   icon, 
   variant = "default",
   trend 
-}) {
+}: StatCardProps) {
   const variantStyles = {
     default: "border-border bg-card",
     success: "border-success/20 bg-success-light/50",
