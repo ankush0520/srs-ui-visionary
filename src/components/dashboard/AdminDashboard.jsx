@@ -47,15 +47,7 @@ import {
   ArrowLeft
 } from "lucide-react";
 
-interface AdminDashboardProps {
-  user: {
-    name: string;
-    email: string;
-  };
-  onLogout: () => void;
-}
-
-export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
+export function AdminDashboard({ user, onLogout }) {
   const [systemStats] = useState({
     totalUsers: 156,
     totalStudents: 120,
@@ -65,8 +57,8 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     thisMonthActivities: 45
   });
 
-  const [selectedActivity, setSelectedActivity] = useState<any>(null);
-  const [selectedFaculty, setSelectedFaculty] = useState<number[]>([]);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+  const [selectedFaculty, setSelectedFaculty] = useState([]);
 
   const [allActivities] = useState([
     { id: 1, name: "Basketball Tournament", category: "Sports & Athletics", points: 20, description: "Inter-college basketball competition" },
@@ -193,7 +185,7 @@ export function AdminDashboard({ user, onLogout }: AdminDashboardProps) {
     }
   ]);
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case "faculty_approved":
         return <Badge variant="outline" className="border-success text-success">Faculty Approved</Badge>;

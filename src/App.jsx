@@ -14,9 +14,9 @@ import NotFound from "./pages/NotFound";
 const queryClient = new QueryClient();
 
 const App = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState(null);
 
-  const handleLogin = (email: string, password: string, role: string) => {
+  const handleLogin = (email, password, role) => {
     // Mock authentication - in real app, this would call an API
     const mockUser = {
       name: role === "student" ? "John Doe" : role === "faculty" ? "Dr. Jane Smith" : "Admin User",
@@ -28,7 +28,7 @@ const App = () => {
     setUser(mockUser);
   };
 
-  const handleRegister = (userData: any) => {
+  const handleRegister = (userData) => {
     // Mock registration
     const mockUser = {
       name: userData.name,

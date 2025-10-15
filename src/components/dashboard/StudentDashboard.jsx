@@ -20,17 +20,7 @@ import {
   Upload
 } from "lucide-react";
 
-interface StudentDashboardProps {
-  user: {
-    name: string;
-    email: string;
-    studentId: string;
-    department: string;
-  };
-  onLogout: () => void;
-}
-
-export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
+export function StudentDashboard({ user, onLogout }) {
   const [activities] = useState([
     {
       id: 1,
@@ -62,7 +52,7 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
   ]);
 
   const [activityDetails, setActivityDetails] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const totalPoints = activities
     .filter(a => a.status === "approved")
@@ -71,13 +61,13 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
   const pendingActivities = activities.filter(a => a.status === "pending").length;
   const approvedActivities = activities.filter(a => a.status === "approved").length;
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileChange = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedFile(e.target.files[0]);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e) => {
     e.preventDefault();
     if (!activityDetails.trim()) {
       alert("Please enter activity details");
@@ -95,7 +85,7 @@ export function StudentDashboard({ user, onLogout }: StudentDashboardProps) {
     setSelectedFile(null);
   };
 
-  const getStatusBadge = (status: string) => {
+  const getStatusBadge = (status) => {
     switch (status) {
       case "approved":
         return <Badge variant="default" className="bg-success text-success-foreground">Approved</Badge>;
