@@ -7,17 +7,13 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Mail, Lock, UserCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 
-interface LoginFormProps {
-  onLogin: (email: string, password: string, role: string) => void;
-}
-
-export function LoginForm({ onLogin }: LoginFormProps) {
+export function LoginForm({ onLogin }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [role, setRole] = useState("student");
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     

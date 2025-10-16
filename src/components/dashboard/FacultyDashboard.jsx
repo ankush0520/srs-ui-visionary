@@ -21,16 +21,7 @@ import {
 } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
 
-interface FacultyDashboardProps {
-  user: {
-    name: string;
-    email: string;
-    department: string;
-  };
-  onLogout: () => void;
-}
-
-export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
+export function FacultyDashboard({ user, onLogout }) {
   const [pendingRequests] = useState([
     {
       id: 1,
@@ -97,7 +88,7 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
 
   const [selectedRequest, setSelectedRequest] = useState(pendingRequests[0]);
   const [reviewComment, setReviewComment] = useState("");
-  const [selectedStudents, setSelectedStudents] = useState<number[]>([]);
+  const [selectedStudents, setSelectedStudents] = useState([]);
   const [selectAll, setSelectAll] = useState(false);
 
   // Sample student data for bulk actions
@@ -153,12 +144,12 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
   const pendingCount = pendingRequests.length;
   const reviewedThisWeek = 12;
 
-  const handleApprove = (requestId: number) => {
+  const handleApprove = (requestId) => {
     console.log("Approved request:", requestId, "Comment:", reviewComment);
     setReviewComment("");
   };
 
-  const handleReject = (requestId: number) => {
+  const handleReject = (requestId) => {
     console.log("Rejected request:", requestId, "Comment:", reviewComment);
     setReviewComment("");
   };
@@ -172,7 +163,7 @@ export function FacultyDashboard({ user, onLogout }: FacultyDashboardProps) {
     setSelectAll(!selectAll);
   };
 
-  const handleStudentSelect = (studentId: number) => {
+  const handleStudentSelect = (studentId) => {
     if (selectedStudents.includes(studentId)) {
       setSelectedStudents(selectedStudents.filter(id => id !== studentId));
     } else {
